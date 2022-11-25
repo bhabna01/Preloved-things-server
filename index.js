@@ -6,7 +6,7 @@ require('dotenv').config();
 const port = process.env.port || 5000
 app.use(cors());
 app.use(express.json());
-
+//fkkklslal
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.5bogalj.mongodb.net/?retryWrites=true&w=majority`;
 
