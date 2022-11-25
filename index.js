@@ -17,6 +17,7 @@ async function run() {
     try {
         const categoriesCollection = client.db('preloved').collection('categories')
         const productsCollection = client.db('preloved').collection('products')
+        const usersCollection = client.db('preloved').collection('users');
         app.get('/categories', async (req, res) => {
             const query = {}
             const cursor = categoriesCollection.find(query)
@@ -30,6 +31,14 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.post("/users", async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            // TODO: make sure you do not enter duplicate user email
+            // only insert users if the user doesn't exist in the database
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
 
 
     }
