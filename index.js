@@ -173,7 +173,7 @@ async function run() {
             // console.log(booking);
             const query = {
                 // buyerEmail: booking.buyerEmail,
-                bookName: booking.bookName,
+                product_name: booking.product_name,
             };
 
             const alreadyBooked = await bookingsCollection.find(query).toArray();
