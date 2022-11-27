@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 const app = express()
 require('dotenv').config();
@@ -151,6 +151,18 @@ async function run() {
             // console.log(products);
             res.send(allSellers);
         });
+        app.put('/users/seller/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    status: 'Verified'
+                }
+            }
+            const result = await usersCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        });
 
 
         app.get("/bookings", async (req, res) => {
@@ -170,18 +182,18 @@ async function run() {
 
         app.post("/bookings", async (req, res) => {
             const booking = req.body;
-            // console.log(booking);
+
             const query = {
-                // buyerEmail: booking.buyerEmail,
+
                 product_name: booking.product_name,
             };
 
             const alreadyBooked = await bookingsCollection.find(query).toArray();
 
-            if (alreadyBooked.length) {
-                const message = `Product already booked`;
-                return res.send({ acknowledged: false, message });
-            }
+            // if (alreadyBooked.length) {
+            //     const message = `Product already booked`;
+            //     return res.send({ acknowledged: false, message });
+            // }
 
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
@@ -268,7 +280,49 @@ async function run() {
             const result = await usersCollection.deleteOne(query);
             res.send(result);
         });
+        app.patch("/seller/myProduct/:id", async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            // const decodedEmail = req.decoded.email;
 
+            // if (email !== decodedEmail) {
+            //     return res.status(403).send({ message: 'forbidden access' });
+            // }
+
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    // productStatus: 'sold',
+                    isAdvertised: "yes",
+                }
+            }
+            const result = await productsCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+
+        });
+        app.get("/seller/myProduct/:id", async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            // const decodedEmail = req.decoded.email;
+
+            // if (email !== decodedEmail) {
+            //     return res.status(403).send({ message: 'forbidden access' });
+            // }
+
+            const query = { _id: ObjectId(id) }
+
+            const result = await productsCollection.findOne(query);
+            res.send(result);
+
+        });
+        app.get('/products', async (req, res) => {
+            const isAdvertised = req.query.isAdvertised;
+            const query = { isAdvertised: isAdvertised };
+            const products = await productsCollection.find(query).toArray();
+            res.send(products);
+
+        })
 
         // app.get('/jwt', async (req, res) => {
         //     const email = req.query.email;
