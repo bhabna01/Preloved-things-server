@@ -179,7 +179,7 @@ async function run() {
             const alreadyBooked = await bookingsCollection.find(query).toArray();
 
             if (alreadyBooked.length) {
-                const message = `You already have booked this book`;
+                const message = `Product already booked`;
                 return res.send({ acknowledged: false, message });
             }
 
