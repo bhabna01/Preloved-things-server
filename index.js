@@ -323,6 +323,15 @@ async function run() {
             res.send(products);
 
         })
+        app.get('/users/seller/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.query.status;
+            const query = { status: status };
+            const users = await usersCollection.find(query).toArray();
+            res.send(users);
+            console.log(users)
+
+        })
 
         // app.get('/jwt', async (req, res) => {
         //     const email = req.query.email;
